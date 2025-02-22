@@ -9,12 +9,21 @@ import { RpgEvent, EventData, RpgPlayer } from '@rpgjs/server'
 })
 export default class VillagerEvent extends RpgEvent {
     onInit() {
-        this.setGraphic('female')
+        this.setGraphic('hero')
     }
     async onAction(player: RpgPlayer) {
-        await player.showText('I give you 10 gold.', {
-            talkWith: this
-        })
-        player.gold += 10
+        const choice = await player.showChoices('Are you from UVCE?', [
+            { text: 'Yes', value: 'yes' },
+            { text: 'No', value: 'no' },
+        ]);
+
+        if (choice && choice.value === 'yes') {
+            await player.showText('Yayyyyy!');
+            // Trigger shop logic
+        } else if (choice && choice.value === 'no') {
+            await player.showText('Owwww, But you still get 100 Gold!');
+            player.gold += 100;
+            // Trigger selling logic
+        }
     }
 } 
